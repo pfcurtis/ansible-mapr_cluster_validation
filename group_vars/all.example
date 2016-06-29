@@ -1,0 +1,21 @@
+
+# disks to use for MapR FS on each node. 
+mapr_disks: [ "/dev/xvdf" ]
+
+# set to true if you're OK with running a destructive
+# test on your mapr_disks.
+destructive_tests_ok: False
+
+# set to true if you want to install the MapR
+# installer
+install_mapr_installer: False
+
+# Set this if you have a disk device you want
+# to mount on /opt/mapr.
+#opt_mapr_device: "/dev/xvdb"
+
+# Set up your HTTP proxy, if needed.
+proxy_env: { }
+#proxy_env:
+#  http_proxy: http://172.16.1.58:3128
+#  https_proxy: http://172.16.1.58:3128

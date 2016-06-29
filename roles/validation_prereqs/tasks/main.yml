@@ -1,0 +1,91 @@
+    - name: configure proxy for yum
+      become: true
+      become_user: root
+      lineinfile: dest=/etc/yum.conf line=proxy={{proxy_env.http_proxy}} regexp=^proxy backup=yes
+      when: proxy_env.http_proxy is defined
+
+    - name: copy cluster-validation archive
+      copy:
+        src: 7d89eef737975784d3e99622c8dbf089dc404f21.tar.gz
+        dest: ./cluster-validation.tgz
+
+    - name: unpack cluster-validation
+      unarchive:
+        copy: no
+        src: ./cluster-validation.tgz
+        dest: ./
+        owner: centos
+
+    - name: create a link cluster-validation master
+      file: state=link dest=cluster-validation src=cluster-validation-7d89eef737975784d3e99622c8dbf089dc404f21
+
+    - name: copy static fio binary
+      copy:
+        src: fio
+        dest: ./
+
+    - name: format /opt/mapr device
+      become: true
+      become_user: root
+      filesystem:
+        dev: '{{opt_mapr_device}}'
+        fstype: ext4
+      when: 'opt_mapr_device is defined'
+
+    - name: mount /dev/xvdb on /opt/mapr
+      become: true
+      become_user: root
+      mount:
+        fstype: ext4
+        name: /opt/mapr
+        src: '{{opt_mapr_device}}'
+        state: mounted
+      when: 'opt_mapr_device is defined'
+
+    - name: check whether port 5555 is listening (rpctest)
+      wait_for: port=5555 timeout=2
+      ignore_errors: True
+      register: rpctest_listening
+
+    - name: ensure iptables is stopped
+      become: true
+      become_user: root
+      service: name=iptables state=stopped
+      when: ansible_distribution_major_version|version_compare('7', '<=')
+
+    - name: run rpctest server
+      shell: nohup cluster-validation/pre-install/rpctest -server &
+      when: rpctest_listening|failed
+
+    - name: check for presence of mapr-installer package
+      command: rpm -q mapr-installer
+      register: mapr_installer_installed
+      failed_when: mapr_installer_installed.rc not in (0,1)
+      changed_when: false
+      when: install_mapr_installer
+
+    - name: stop mapr-installer if installed
+      become: true
+      become_user: root
+      service:
+        name: mapr-installer
+        state: stopped
+      when: mapr_installer_installed.rc == 0
+      when: install_mapr_installer
+
+    - name: get the mapr installer setup script
+      copy:
+        src: ./mapr-setup.sh
+        dest: .
+        mode: 0750
+      when: "'{{inventory_hostname}}' == '{{groups.cluster|first}}'"
+      environment: '{{proxy_env}}'
+      when: install_mapr_installer
+
+    - name: run the installer script to set up the installer
+      become: true
+      become_user: root
+      command: ./mapr-setup.sh -y -p {{inventory_hostname}}:{{installer_port|default(9443)}}
+      when: "'{{inventory_hostname}}' == '{{groups.cluster|first}}'"
+      environment: '{{proxy_env}}'
+      when: install_mapr_installer

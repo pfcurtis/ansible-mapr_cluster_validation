@@ -1,0 +1,14 @@
+- hosts: all
+  roles:
+    - { role: validation_prereqs }
+
+- hosts: all
+  serial: 1
+  roles:
+    - { role: pre_install_validation }
+
+- hosts: all
+  tasks:
+    - name: kill off rpctest servers
+      command: pkill -f rpctest
+
