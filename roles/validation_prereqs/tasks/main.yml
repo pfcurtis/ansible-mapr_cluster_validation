@@ -23,6 +23,7 @@
       copy:
         src: fio
         dest: ./
+        mode: 0755
 
     - name: format /opt/mapr device
       become: true
@@ -51,7 +52,7 @@
       become: true
       become_user: root
       service: name=iptables state=stopped
-      when: ansible_distribution_major_version|version_compare('7', '<=')
+      when: ansible_distribution_major_version|version_compare('7', '<')
 
     - name: run rpctest server
       shell: nohup cluster-validation/pre-install/rpctest -server &
@@ -70,22 +71,21 @@
       service:
         name: mapr-installer
         state: stopped
-      when: mapr_installer_installed.rc == 0
-      when: install_mapr_installer
+      when: mapr_installer_installed.rc == 0 and install_mapr_installer
 
     - name: get the mapr installer setup script
       copy:
         src: ./mapr-setup.sh
         dest: .
         mode: 0750
-      when: "'{{inventory_hostname}}' == '{{groups.cluster|first}}'"
+      run_once: yes
+      when: "'{{inventory_hostname}}' == '{{groups.cluster|first}}' and install_mapr_installer"
       environment: '{{proxy_env}}'
-      when: install_mapr_installer
 
     - name: run the installer script to set up the installer
       become: true
       become_user: root
+      run_once: yes
       command: ./mapr-setup.sh -y -p {{inventory_hostname}}:{{installer_port|default(9443)}}
-      when: "'{{inventory_hostname}}' == '{{groups.cluster|first}}'"
+      when: "'{{inventory_hostname}}' == '{{groups.cluster|first}}' and install_mapr_installer"
       environment: '{{proxy_env}}'
-      when: install_mapr_installer

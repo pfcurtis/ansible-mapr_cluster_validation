@@ -1,4 +1,5 @@
 - hosts: all
+  tags: prereqs
   roles:
     - { role: validation_prereqs }
 

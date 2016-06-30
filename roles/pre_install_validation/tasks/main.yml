@@ -9,7 +9,7 @@
       shell: 'cluster-validation/pre-install/rpctest -client +10000 {% for host in groups.cluster %}{% if "{{host}}" != "{{inventory_hostname}}" %}{{hostvars[host].ansible_fqdn}}{% if not loop.last %},{% endif %}{% endif %}{% endfor %} | tail -1 | sed -e "s/[ :/A-Za-z#]//g"'
 
     - name: run fio on mapr disks
-      become: true
+      become: True
       become_user: root
       command: ./fio --name=job1 --size 4g --bs 1m --filename {{mapr_disks|join(':')}} --rw=write --name=job2 --size 4g --bs 1m --filename {{mapr_disks|join(':')}}  --output-format=json
       when: destructive_tests_ok
