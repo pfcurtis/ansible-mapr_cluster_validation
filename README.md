@@ -16,7 +16,7 @@ Optionally it can configure the MapR installer for you as well if you set
 
 # Running
 
-To run you need an inventory file with all nodes in it. Please refer to the (ansible documentation)[http://docs.ansible.com/ansible/intro_inventory.html#hosts-and-groups] for how to create the inventory file.
+To run you need an inventory file with all nodes in it. Please refer to the [ansible documentation](http://docs.ansible.com/ansible/intro_inventory.html#hosts-and-groups) for how to create the inventory file.
 
 Copy `group_vars/all.example` to `group_vars/all` and edit it to your liking.
 
