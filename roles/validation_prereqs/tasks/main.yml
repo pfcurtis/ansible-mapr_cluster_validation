@@ -14,7 +14,6 @@
         copy: no
         src: ./cluster-validation.tgz
         dest: ./
-        owner: centos
 
     - name: create a link cluster-validation master
       file: state=link dest=cluster-validation src=cluster-validation-7d89eef737975784d3e99622c8dbf089dc404f21
