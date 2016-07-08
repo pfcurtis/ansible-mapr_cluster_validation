@@ -40,5 +40,5 @@ If you do not have ssh set up for public key authentication you can run ansible 
 ansible-playbook -u centos -k -i inventory cluster-validation.yml > cluster-validation.json
 ```
 
-Note that this ships with an ansible.cfg that can be modified, if for example you do not like disabling host key
-checking.
+Note that this ships with an ansible.cfg that can be modified if, for example, you do not prefer to keep host key
+checking enabled.
