@@ -1,0 +1,6 @@
+[submodule "roles/validation_prereq"]
+	path = roles/validation_prereq
+	url = git@github.com:vicenteg/ansible-mapr_validation_prereqs.git
+[submodule "roles/validation"]
+	path = roles/validation
+	url = git@github.com:vicenteg/ansible-mapr_validation.git
