@@ -1,12 +1,12 @@
 - hosts: all
   tags: prereqs
   roles:
-    - { role: validation_prereqs }
+    - { role: validation_prereq }
 
 - hosts: all
   serial: 1
   roles:
-    - { role: pre_install_validation }
+    - { role: validation }
 
 - hosts: all
   tasks:
