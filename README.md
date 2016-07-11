@@ -75,7 +75,7 @@ After cloning and initializing submodules:
 
 ```
 (
-	ver=`git tag -l | head -1`;
+	ver=`git tag -l | tail -1`;
 	git checkout $ver;
 	cd ../;
 	tar --exclude all --exclude .git* --exclude *.json --exclude *.retry -cvzf ansible-mapr_cluster_validation-$ver.tar.gz ansible-mapr_cluster_validation
