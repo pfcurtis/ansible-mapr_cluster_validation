@@ -14,9 +14,27 @@ Currently it will do the following.
 Optionally it can configure the MapR installer for you as well if you set
 `install_mapr_installer: True` in `group_vars/all`.
 
+# Getting it
+
+Go to https://github.com/vicenteg/ansible-mapr_cluster_validation/releases and get a release, preferably the most recent one.
+
+Unpack the tarball.
+
 # Running
 
-To run you need an inventory file with all nodes in it. Please refer to the [ansible documentation](http://docs.ansible.com/ansible/intro_inventory.html#hosts-and-groups) for how to create the inventory file.
+To run you need an inventory file with all nodes and a `cluster` group in it. Please refer to the [ansible documentation](http://docs.ansible.com/ansible/intro_inventory.html#hosts-and-groups) for how to create the inventory file.
+
+A simple example:
+
+```
+node1 ansible_ssh_host=192.168.101.1
+node2 ansible_ssh_host=192.168.101.2
+node3 ansible_ssh_host=192.168.101.3
+
+[cluster]
+node[1:3]
+
+```
 
 Copy `group_vars/all.example` to `group_vars/all` and edit it to your liking.
 
@@ -42,3 +60,25 @@ ansible-playbook -u centos -k -i inventory cluster-validation.yml > cluster-vali
 
 Note that this ships with an ansible.cfg that can be modified if, for example, you do not prefer to keep host key
 checking enabled.
+
+# Developing
+
+Clone this repo, then `git submodule update --init`.
+
+Create a new branch, e.g., `git checkout -b my_new_feature`.
+
+Commit, push, pull request.
+
+# Packaging
+
+After cloning and initializing submodules:
+
+```
+(
+	ver=`git tag -l | head -1`;
+	git checkout 0.1 ;
+	cd ../;
+	tar --exclude all --exclude .git* --exclude *.json --exclude *.retry -cvzf ansible-mapr_cluster_validation-$ver.tar.gz ansible-mapr_cluster_validation
+)
+```
+Then create a new release on github and upload the tarball.
