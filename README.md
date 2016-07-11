@@ -40,26 +40,24 @@ Copy `group_vars/all.example` to `group_vars/all` and edit it to your liking.
 
 This should function even without internet access, except for the MapR installer installation, which is optional and disabled by default.
 
-By default, this playbook will use the json callback plugin, which will not emit any output until everything is done.
-
 YMMV, but for me against a 4 node cluster with 1 HDD it takes about 20-25 minutes to complete. Larger clusters, more
 disks, slower networks and disks will cause this to take longer.
 
-An example to run this with the user `centos` (should have sudo ability on the remotes) on the remote machines, and
-writing the output to a file for inspection:
+An example to run this with the user `centos` (should have sudo ability on the remotes) on the remote machines:
 
 ```
-ansible-playbook -u centos -i inventory cluster-validation.yml > cluster-validation.json
+ansible-playbook -u centos -i inventory cluster-validation.yml
 ```
 
 If you do not have ssh set up for public key authentication you can run ansible as follows (note the `-k`):
 
 ```
-ansible-playbook -u centos -k -i inventory cluster-validation.yml > cluster-validation.json
+ansible-playbook -u centos -k -i inventory cluster-validation.yml
 ```
 
 Note that this ships with an ansible.cfg that can be modified if, for example, you do not prefer to keep host key
-checking enabled.
+checking enabled. You can also enable JSON output of the playbooks, which will allow you to deal with the output 
+programatically.
 
 # Developing
 
